@@ -3,127 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Answer Generation System</title>
+    <title>AI Q&A Analyzer</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <i class="fas fa-brain header-icon"></i>
-                <div>
-                    <h1 class="title">AI Answer Generation System</h1>
-                    <p class="subtitle">Advanced NLP-powered question answering with intelligent analysis</p>
-                </div>
-            </div>
-        </header>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-brand">
+            <i class="fas fa-chart-line"></i>
+            <span>AI Q&A Analyzer</span>
+        </div>
+        <div class="nav-links">
+            <a href="#" class="nav-link active">Home</a>
+            <a href="#" class="nav-link">History</a>
+            <a href="#" class="nav-link">Settings</a>
+            <button class="sign-up-btn">Sign Up</button>
+        </div>
+    </nav>
 
-        <!-- Search Section -->
-        <section class="search-section">
-            <div class="search-container">
-                <label for="questionInput" class="input-label">
-                    <i class="fas fa-question-circle"></i> Enter Your Question
-                </label>
-                <div class="input-group">
-                    <input 
-                        type="text" 
-                        id="questionInput" 
-                        class="question-input"
-                        placeholder="e.g., What is artificial intelligence?"
-                        autocomplete="off"
-                    >
-                    <button id="submitBtn" class="submit-btn">
-                        <i class="fas fa-search"></i>
-                        <span>Get Answer</span>
-                    </button>
-                </div>
+    <div class="main-container">
+        <!-- Left Panel - Question Input -->
+        <aside class="question-panel">
+            <h2 class="panel-title">Ask Your Question</h2>
+            <p class="panel-subtitle">Get a detailed analysis of any question you have.</p>
+            
+            <div class="question-section">
+                <label class="question-label">Your Question</label>
+                <textarea 
+                    id="questionInput" 
+                    class="question-textarea"
+                    placeholder="Type your question here to get a detailed analysis..."
+                    rows="8"
+                ></textarea>
+                
+                <button id="submitBtn" class="analyze-btn">
+                    <span>Analyze Answer</span>
+                </button>
+                
                 <div id="errorMessage" class="error-message"></div>
             </div>
-        </section>
+        </aside>
 
-        <!-- Loading Spinner -->
-        <div id="loadingSpinner" class="loading-spinner">
-            <div class="spinner"></div>
-            <p>Processing your question with AI & NLP...</p>
-        </div>
+        <!-- Right Panel - Analysis Results -->
+        <main class="analysis-panel">
+            <!-- Welcome State -->
+            <div id="welcomeState" class="welcome-state">
+                <i class="fas fa-lightbulb welcome-icon"></i>
+                <h2>Ready to Analyze</h2>
+                <p>Enter your question on the left and click "Analyze Answer" to get started.</p>
+            </div>
 
-        <!-- Results Section -->
-        <section id="resultsSection" class="results-section" style="display: none;">
-            <!-- Statistics Cards -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <i class="fas fa-chart-line"></i>
-                        <h3>Difficulty Level</h3>
+            <!-- Loading State -->
+            <div id="loadingSpinner" class="loading-state" style="display: none;">
+                <div class="spinner"></div>
+                <p>Processing your question with AI & NLP...</p>
+            </div>
+
+            <!-- Results Section -->
+            <div id="resultsSection" class="results-content" style="display: none;">
+                <!-- Stats Row -->
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <span class="stat-label">Difficulty Level</span>
+                        <span id="statDifficulty" class="stat-value">-</span>
                     </div>
-                    <p id="difficultyLevel" class="stat-value">-</p>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <i class="fas fa-paragraph"></i>
-                        <h3>Paragraphs</h3>
+                    <div class="stat-item">
+                        <span class="stat-label">Keywords</span>
+                        <span id="statKeywords" class="stat-value">-</span>
                     </div>
-                    <p id="paragraphCount" class="stat-value">-</p>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <i class="fas fa-key"></i>
-                        <h3>Keywords</h3>
+                    <div class="stat-item">
+                        <span class="stat-label">Total Words</span>
+                        <span id="statWords" class="stat-value">-</span>
                     </div>
-                    <p id="keywordCount" class="stat-value">-</p>
                 </div>
-            </div>
 
-            <!-- Quick Summary -->
-            <div class="result-card">
-                <div class="card-header">
-                    <i class="fas fa-file-alt"></i>
-                    <h2>Quick Summary</h2>
+                <div class="analysis-header">
+                    <h1>Analysis</h1>
+                    <span id="difficultyBadge" class="difficulty-badge">Intermediate</span>
                 </div>
-                <div id="summaryContent" class="summary-content"></div>
-            </div>
 
-            <!-- Keywords -->
-            <div class="result-card">
-                <div class="card-header">
-                    <i class="fas fa-tags"></i>
-                    <h2>Key Terms (<span id="keywordCountDisplay">0</span>)</h2>
-                </div>
-                <div id="keywordsContainer" class="keywords-container"></div>
-            </div>
+                <!-- Quick Summary Section -->
+                <section class="result-section">
+                    <h3 class="section-title">Quick Summary</h3>
+                    <div id="summaryContent" class="summary-box"></div>
+                </section>
 
-            <!-- Key Points -->
-            <div class="result-card">
-                <div class="card-header">
-                    <i class="fas fa-lightbulb"></i>
-                    <h2>Key Points (<span id="keyPointsCountDisplay">0</span>)</h2>
-                </div>
-                <div id="keyPointsContainer" class="key-points-container"></div>
-            </div>
+                <!-- Full Detailed Answer Section -->
+                <section class="result-section">
+                    <h3 class="section-title">Full Detailed Answer</h3>
+                    <div id="fullAnswerContent" class="detailed-answer"></div>
+                </section>
 
-            <!-- Structured Paragraphs -->
-            <div class="result-card">
-                <div class="card-header">
-                    <i class="fas fa-list-ol"></i>
-                    <h2>Structured Paragraphs</h2>
-                </div>
-                <div id="paragraphsContainer" class="paragraphs-container"></div>
-            </div>
+                <!-- Key Terms Section -->
+                <section class="result-section">
+                    <h3 class="section-title">Key Terms</h3>
+                    <div id="keywordsContainer" class="key-terms-grid"></div>
+                </section>
 
-            <!-- Full Answer -->
-            <div class="result-card">
-                <div class="card-header">
-                    <i class="fas fa-book-open"></i>
-                    <h2>Full Detailed Answer</h2>
-                </div>
-                <div id="fullAnswerContent" class="full-answer-content"></div>
+                <!-- Key Points Section -->
+                <section class="result-section">
+                    <h3 class="section-title">Key Points</h3>
+                    <div id="keyPointsContainer" class="key-points-list"></div>
+                </section>
+
+                <!-- Structured Paragraphs Section -->
+                <section class="result-section collapsible">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3 class="section-title">Structured Paragraphs</h3>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div id="paragraphsContainer" class="section-content"></div>
+                </section>
             </div>
-        </section>
+        </main>
     </div>
 
     <script src="js/api.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        function toggleSection(header) {
+            const section = header.parentElement;
+            section.classList.toggle('open');
+        }
+    </script>
 </body>
 </html>

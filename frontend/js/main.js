@@ -2,22 +2,20 @@
 const questionInput = document.getElementById('questionInput');
 const submitBtn = document.getElementById('submitBtn');
 const errorMessage = document.getElementById('errorMessage');
+const welcomeState = document.getElementById('welcomeState');
 const loadingSpinner = document.getElementById('loadingSpinner');
 const resultsSection = document.getElementById('resultsSection');
 
-// Stats elements
-const difficultyLevel = document.getElementById('difficultyLevel');
-const paragraphCount = document.getElementById('paragraphCount');
-const keywordCount = document.getElementById('keywordCount');
-
-// Content elements
+// Result elements
+const difficultyBadge = document.getElementById('difficultyBadge');
+const statDifficulty = document.getElementById('statDifficulty');
+const statKeywords = document.getElementById('statKeywords');
+const statWords = document.getElementById('statWords');
 const summaryContent = document.getElementById('summaryContent');
-const keywordsContainer = document.getElementById('keywordsContainer');
-const keywordCountDisplay = document.getElementById('keywordCountDisplay');
-const keyPointsContainer = document.getElementById('keyPointsContainer');
-const keyPointsCountDisplay = document.getElementById('keyPointsCountDisplay');
-const paragraphsContainer = document.getElementById('paragraphsContainer');
 const fullAnswerContent = document.getElementById('fullAnswerContent');
+const keywordsContainer = document.getElementById('keywordsContainer');
+const keyPointsContainer = document.getElementById('keyPointsContainer');
+const paragraphsContainer = document.getElementById('paragraphsContainer');
 
 // State
 let isProcessing = false;
@@ -73,6 +71,7 @@ async function handleSubmit() {
     try {
         isProcessing = true;
         hideError();
+        hideWelcome();
         hideResults();
         showLoading();
         disableInput();
@@ -101,39 +100,64 @@ function displayResults(result) {
 
     console.log('Received result:', result); // Debug log
 
-    // Update stats
-    updateStats(result);
+    // Update stats row
+    updateStatsRow(result);
+
+    // Update difficulty badge
+    updateDifficultyBadge(result.difficulty);
 
     // Update summary
     summaryContent.textContent = result.summary;
 
-    // Update keywords
-    displayKeywords(result.keywords);
-
-    // Update key points
-    displayKeyPoints(result.key_points);
-
-    // Update paragraphs
-    displayParagraphs(result.paragraphs);
-
     // Update full answer
     fullAnswerContent.textContent = result.full_answer;
+
+    // Update keywords
+    displayKeywords(result.keywords || []);
+
+    // Update key points
+    displayKeyPoints(result.key_points || []);
+
+    // Update paragraphs
+    displayParagraphs(result.paragraphs || []);
 
     // Show results
     showResults();
 }
 
-// Update Statistics
-function updateStats(result) {
-    // Difficulty level
-    difficultyLevel.textContent = result.difficulty;
-    difficultyLevel.className = 'stat-value ' + result.difficulty.toLowerCase();
+// Update Stats Row
+function updateStatsRow(result) {
+    // Difficulty Level
+    if (statDifficulty) {
+        const difficulty = result.difficulty || 'Intermediate';
+        statDifficulty.textContent = difficulty;
+        statDifficulty.className = 'stat-value difficulty-' + difficulty.toLowerCase();
+    }
 
-    // Paragraph count
-    paragraphCount.textContent = result.paragraphs.length;
+    // Keywords Count
+    if (statKeywords) {
+        const keywordCount = (result.keywords && result.keywords.length) || 0;
+        statKeywords.textContent = keywordCount;
+    }
 
-    // Keyword count
-    keywordCount.textContent = result.keywords.length;
+    // Word Count
+    if (statWords) {
+        const fullAnswer = result.full_answer || '';
+        const wordCount = fullAnswer.trim().split(/\s+/).filter(word => word.length > 0).length;
+        statWords.textContent = wordCount;
+    }
+}
+
+// Update Difficulty Badge
+function updateDifficultyBadge(difficulty) {
+    if (!difficultyBadge) return;
+    
+    difficultyBadge.textContent = difficulty || 'Intermediate';
+    difficultyBadge.className = 'difficulty-badge';
+    
+    if (difficulty) {
+        difficultyBadge.classList.add(difficulty.toLowerCase());
+    }
 }
 
 // Display Keywords
@@ -142,18 +166,15 @@ function displayKeywords(keywords) {
     keywordsContainer.innerHTML = '';
     
     if (!keywords || keywords.length === 0) {
-        keywordsContainer.innerHTML = '<p style="color: #666; padding: 10px;">No keywords extracted.</p>';
-        keywordCountDisplay.textContent = '0';
+        keywordsContainer.innerHTML = '<p style="color: var(--text-secondary);">No keywords extracted.</p>';
         return;
     }
-    
-    keywordCountDisplay.textContent = keywords.length;
     
     keywords.forEach((keyword, index) => {
         const tag = document.createElement('span');
         tag.className = 'keyword-tag';
         tag.textContent = keyword;
-        tag.style.animationDelay = `${index * 0.1}s`;
+        tag.style.animationDelay = `${index * 0.05}s`;
         keywordsContainer.appendChild(tag);
     });
 }
@@ -161,35 +182,34 @@ function displayKeywords(keywords) {
 // Display Key Points
 function displayKeyPoints(keyPoints) {
     keyPointsContainer.innerHTML = '';
-    keyPointsCountDisplay.textContent = keyPoints.length;
     
     if (!keyPoints || keyPoints.length === 0) {
-        keyPointsContainer.innerHTML = '<p style="color: #666;">No key points extracted.</p>';
+        keyPointsContainer.innerHTML = '<p style="color: var(--text-secondary);">No key points extracted.</p>';
         return;
     }
     
-    const list = document.createElement('ul');
-    list.className = 'key-points-list';
-    
     keyPoints.forEach((point, index) => {
-        const item = document.createElement('li');
+        const item = document.createElement('div');
         item.className = 'key-point-item';
-        item.style.animationDelay = `${index * 0.1}s`;
+        item.style.animationDelay = `${index * 0.05}s`;
         item.innerHTML = `<i class="fas fa-check-circle"></i><span>${point}</span>`;
-        list.appendChild(item);
+        keyPointsContainer.appendChild(item);
     });
-    
-    keyPointsContainer.appendChild(list);
 }
 
 // Display Paragraphs
 function displayParagraphs(paragraphs) {
     paragraphsContainer.innerHTML = '';
     
+    if (!paragraphs || paragraphs.length === 0) {
+        paragraphsContainer.innerHTML = '<p style="color: var(--text-secondary);">No paragraphs available.</p>';
+        return;
+    }
+    
     paragraphs.forEach((paragraph, index) => {
         const block = document.createElement('div');
         block.className = 'paragraph-block';
-        block.style.animationDelay = `${index * 0.15}s`;
+        block.style.animationDelay = `${index * 0.05}s`;
         
         const title = document.createElement('div');
         title.className = 'paragraph-title';
@@ -215,16 +235,29 @@ function hideError() {
     errorMessage.classList.remove('show');
 }
 
+function showWelcome() {
+    if (welcomeState) {
+        welcomeState.style.display = 'flex';
+    }
+}
+
+function hideWelcome() {
+    if (welcomeState) {
+        welcomeState.style.display = 'none';
+    }
+}
+
 function showLoading() {
-    loadingSpinner.classList.add('show');
+    loadingSpinner.style.display = 'flex';
 }
 
 function hideLoading() {
-    loadingSpinner.classList.remove('show');
+    loadingSpinner.style.display = 'none';
 }
 
 function showResults() {
     resultsSection.style.display = 'block';
+    resultsSection.classList.add('show');
     setTimeout(() => {
         resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
@@ -232,16 +265,17 @@ function showResults() {
 
 function hideResults() {
     resultsSection.style.display = 'none';
+    resultsSection.classList.remove('show');
 }
 
 function disableInput() {
     questionInput.disabled = true;
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Processing...</span>';
+    submitBtn.innerHTML = '<span>Processing...</span>';
 }
 
 function enableInput() {
     questionInput.disabled = false;
     submitBtn.disabled = false;
-    submitBtn.innerHTML = '<i class="fas fa-search"></i><span>Get Answer</span>';
+    submitBtn.innerHTML = '<span>Analyze Answer</span>';
 }
