@@ -1,0 +1,100 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pyd
+
+# Virtual environments
+.venv/
+env/
+venv/
+ENV/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+pip-wheel-metadata/
+.eggs/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs and runtime files
+*.log
+instance/
+.webassets-cache
+
+# dotenv environment files (may contain secrets)
+.env
+.env.*
+
+# Jupyter
+.ipynb_checkpoints
+
+# Node / frontend
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-lock.yaml
+
+# Build artifacts
+*.bundle
+*.lock
+
+# macOS
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+ehthumbs.db
+Desktop.ini
+
+# Python bytecode caches for compiled C extensions
+*.so
+
+# Optional: local settings
+local_settings.py
+
+# Logs
+logs/
+
+# Coverage reports
+coverage/
+
+# Misc
+*.pot
+*.mo
+
+# Keep this repo-specific list below (add files/folders you want ignored)
+# e.g. secret keys, exported datasets, large model files
+# models/
+# data/
+# Common local virtualenv name to ignore
+myenv/
